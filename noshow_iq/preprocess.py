@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-
 
 def load_and_clean(filepath):
     df = pd.read_csv(filepath)
