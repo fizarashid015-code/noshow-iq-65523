@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def load_and_clean(filepath):
     df = pd.read_csv(filepath)
 
