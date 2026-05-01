@@ -7,6 +7,13 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+    env:
+      MONGO_URI: mongodb://localhost:27017
     steps:
       - uses: actions/checkout@v4
 
@@ -16,6 +23,17 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt flake8 pytest
+
+      - name: Train model
+        run: |
+          python -c "
+          from noshow_iq.preprocess import load_and_clean, get_features_and_target
+          from noshow_iq.model import train
+          df = load_and_clean('data/KaggleV2-May-2016.csv')
+          X, y = get_features_and_target(df)
+          train(X, y)
+          print('Model trained!')
+          "
 
       - name: Lint with flake8
         run: flake8 . --max-line-length=100 --exclude=venv,.git
@@ -29,4 +47,10 @@ jobs:
       - name: Push to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push ${{ secrets.DOCKER_USERNAME }}/noshow-iq
+          docker push ${{ secrets.DOCKER_USERNAME }}/noshow-iq:latest
+
+      - name: Rebuild Hugging Face Space
+        run: |
+          curl -X POST \
+            "https://huggingface.co/api/spaces/${{ secrets.HF_USERNAME }}/noshow-iq/restart" \
+            -H "Authorization: Bearer ${{ secrets.HF_TOKEN }}"
