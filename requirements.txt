@@ -7,3 +7,4 @@ joblib
 imbalanced-learn
 pymongo
 python-dotenv
+-e .
