@@ -21,7 +21,9 @@ jobs:
         run: flake8 . --max-line-length=100 --exclude=venv,.git
 
       - name: Run pytest
-        run: pytest -v
+        run: |
+          pip install .
+          pytest -v
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/noshow-iq:latest .
