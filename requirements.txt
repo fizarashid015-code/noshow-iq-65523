@@ -1,1 +1,9 @@
-﻿flask\nflask-cors\npandas\nnumpy\nscikit-learn\njoblib\nimbalanced-learn\npymongo\npython-dotenv
+﻿flask
+flask-cors
+pandas
+numpy
+scikit-learn
+joblib
+imbalanced-learn
+pymongo
+python-dotenv
